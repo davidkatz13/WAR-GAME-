@@ -1,0 +1,139 @@
+#The game is the simulation of two AI playing against each other at the WAR game, where the higher order card wins.
+#If the two cards similar, then both players add 5 cards on the desk, whose cards are higher wins. The game continues, till one of the players do not have cards.  
+# this code was created with the help of the Tutor on Udemy course. Still do not have full undrestanding of OOP.
+
+# step 1: create variables for the card deck
+
+import random
+suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
+ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
+#assign each card a value, to make a compoarison
+value={'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
+        'Nine':9, 'Ten':10, 'Jack':11, 'Queen':12, 'King':13, 'Ace':14} 
+        
+#step 2: create a Card class.
+
+class Card():
+    
+    def __init__(self,suit,rank):
+        self.suit = suit
+        self.rank = rank
+        self.value = value[rank]
+        
+    def __str__(self):
+        return self.rank + ' of ' + self.suit
+        
+#step 3: create a Deck class. 
+
+class Deck():
+    
+    def __init__(self):
+        
+        self.all_cards = []
+        
+        for suit in suits:
+            for rank in ranks:
+                #create the card object
+                created_card = Card(suit,rank)
+                
+                
+                self.all_cards.append(created_card)
+                
+    def shuffle(self):
+        random.shuffle(self.all_cards)
+    
+    def deal_one(self):
+        return self.all_cards.pop()
+        
+#step 4: create a Player class. 
+
+class Player():
+    
+    def __init__(self, name):
+        self.name = name
+        self.all_cards = []
+        
+    def remove_one(self):
+        return self.all_cards.pop(0)
+    
+    def add_cards(self,new_cards):
+        if type(new_cards) == type([]):
+            self.all_cards.extend(new_cards)
+        else:
+            self.all_cards.append(new_cards)
+        
+        
+    
+    def __str__(self):
+        return f'Player {self.name} has {len(self.all_cards)} cards. '
+ 
+#step 5: Game set up
+player1 = Player('One')
+player2 = Player('Two')
+
+new_deck=Deck()
+new_deck.shuffle()
+
+
+for x in range(26):
+    player1.add_cards(new_deck.deal_one())
+    player2.add_cards(new_deck.deal_one())
+    
+#step 6: Game Logic
+
+game_on = True
+round_num = 0
+
+while game_on:
+    round_num +=1
+    print(f'Round {round_num}')
+    
+    if len(player1.all_cards) == 0:
+        print('Player 1 is out of cards! Player 2 has won!')
+        game_on = False
+        break
+    if len(player2.all_cards) == 0:
+        print('Player 2 is out of cards! Player 1 has won!')
+        game_on = False 
+        break 
+    #START A NEW ROUND
+    player_one_cards = []
+    player_one_cards.append(player1.remove_one())
+    
+    player_two_cards = []
+    player_two_cards.append(player2.remove_one())
+    
+    
+    at_war = True # when first cards are equal, the war phase begin
+    while at_war:
+        if player_one_cards[-1].value > player_two_cards[-1].value:
+            
+            player1.add_cards(player_one_cards)
+            player1.add_cards(player_two_cards)
+            
+            at_war = False
+            
+        elif player_one_cards[-1].value < player_two_cards[-1].value:
+            player2.add_cards(player_one_cards)
+            player2.add_cards(player_two_cards)
+            
+            at_war = False
+            
+        else:
+            print('WAR')
+            
+            if len(player1.all_cards) < 5:
+                print('Player 1 is unable to declare a war')
+                print('Player 2 wins!')
+                game_on = False 
+                break 
+            elif len (player2.all_cards) < 5:
+                print('Player 2 is unable to declare a war')
+                print('Player 1 wins!')
+                game_on = False
+                break
+            else:
+                for num in range(5):
+                    player_one_cards.append(player1.remove_one())
+                    player_two_cards.append(player2.remove_one())
+
