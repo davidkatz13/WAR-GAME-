@@ -5,9 +5,9 @@
 # step 1: create variables for the card deck
 
 import random
-suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
-ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
-#assign each card a value, to make a compoarison
+suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')  # the suits are created 
+ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace') # ranks of the cards
+#assign each card a value, to make a comparison
 value={'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
         'Nine':9, 'Ten':10, 'Jack':11, 'Queen':12, 'King':13, 'Ace':14} 
         
@@ -15,13 +15,13 @@ value={'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,
 
 class Card():
     
-    def __init__(self,suit,rank):
-        self.suit = suit
-        self.rank = rank
-        self.value = value[rank]
+    def __init__(self,suit,rank):  # creating an init method 
+        self.suit = suit  # shows the suit of the card, when the method is called
+        self.rank = rank  # shows the rank of the card, when the method is called 
+        self.value = value[rank] # the value is showed for each rank by calling this method 
         
     def __str__(self):
-        return self.rank + ' of ' + self.suit
+        return self.rank + ' of ' + self.suit   # when printing the variable after assignment to the class Card the rank and suit of the card will be printed 
         
 #step 3: create a Deck class. 
 
@@ -29,66 +29,66 @@ class Deck():
     
     def __init__(self):
         
-        self.all_cards = []
+        self.all_cards = [] # empty list that will be filled in with the different cards 
         
-        for suit in suits:
+        for suit in suits:      # for each suit and rank the cards are created 
             for rank in ranks:
                 #create the card object
-                created_card = Card(suit,rank)
+                created_card = Card(suit,rank)    # the card is created 
                 
                 
-                self.all_cards.append(created_card)
+                self.all_cards.append(created_card)   # fill in the list with the cards created, which afterwards will be drawn randomly to two players
                 
     def shuffle(self):
-        random.shuffle(self.all_cards)
+        random.shuffle(self.all_cards)    # here the list is shuffled 
     
     def deal_one(self):
-        return self.all_cards.pop()
+        return self.all_cards.pop()    # this method takes out one card out of the deck
         
 #step 4: create a Player class. 
 
 class Player():
     
-    def __init__(self, name):
+    def __init__(self, name):     # create a name of the player and the hand of the player that holds the cards. 
         self.name = name
-        self.all_cards = []
+        self.all_cards = []       # right now empty hand, then will be filled in with the cards
         
     def remove_one(self):
-        return self.all_cards.pop(0)
+        return self.all_cards.pop(0)    # removes the first card in the hand
     
-    def add_cards(self,new_cards):
-        if type(new_cards) == type([]):
-            self.all_cards.extend(new_cards)
+    def add_cards(self,new_cards):     # this methods adds the cards to the hand after the round played 
+        if type(new_cards) == type([]):     # if at war, then 12 cards will be added, as this is the list we can not use the append method, since then we get smth like this [[]]
+            self.all_cards.extend(new_cards)    # that is why for lists the extend method is used 
         else:
-            self.all_cards.append(new_cards)
+            self.all_cards.append(new_cards)    # if there were no war, then we can just append the won and bet cards into the hand
         
         
     
     def __str__(self):
-        return f'Player {self.name} has {len(self.all_cards)} cards. '
+        return f'Player {self.name} has {len(self.all_cards)} cards. '   # if we print the var assigned with the Player class, then the name of the Player and the amount of cards at hand will be printed
  
 #step 5: Game set up
-player1 = Player('One')
+player1 = Player('One')    # setting the players up
 player2 = Player('Two')
 
-new_deck=Deck()
-new_deck.shuffle()
+new_deck=Deck()   # the deck is created 
+new_deck.shuffle()  # the deck is shuffled 
 
 
 for x in range(26):
-    player1.add_cards(new_deck.deal_one())
+    player1.add_cards(new_deck.deal_one())   # each player receives 26 cards from the deck
     player2.add_cards(new_deck.deal_one())
     
 #step 6: Game Logic
 
-game_on = True
-round_num = 0
+game_on = True  # the game plays until it become False
+round_num = 0   # the game starts with round 1
 
 while game_on:
-    round_num +=1
-    print(f'Round {round_num}')
+    round_num +=1  # the addition to the round happens 
+    print(f'Round {round_num}')  # prints at which round the game is 
     
-    if len(player1.all_cards) == 0:
+    if len(player1.all_cards) == 0:   # this lines checks if the players have cards, if no then the game finishes 
         print('Player 1 is out of cards! Player 2 has won!')
         game_on = False
         break
@@ -97,23 +97,23 @@ while game_on:
         game_on = False 
         break 
     #START A NEW ROUND
-    player_one_cards = []
-    player_one_cards.append(player1.remove_one())
+    player_one_cards = [] # the cards that go to the table to play the round
+    player_one_cards.append(player1.remove_one())   # the card goes out from the hand of both player's and goes on the table
     
-    player_two_cards = []
+    player_two_cards = [] # the same logic plays for second player 
     player_two_cards.append(player2.remove_one())
     
     
     at_war = True # when first cards are equal, the war phase begin
     while at_war:
-        if player_one_cards[-1].value > player_two_cards[-1].value:
+        if player_one_cards[-1].value > player_two_cards[-1].value:    # if the last card on the table of player 1 bigger than player 2, player 1 wins the round 
             
-            player1.add_cards(player_one_cards)
-            player1.add_cards(player_two_cards)
+            player1.add_cards(player_one_cards)  # cards of player 1 on the table are moved the player 1 hands 
+            player1.add_cards(player_two_cards)  # cards of player 2 on the table are moved the player 1 hands
             
-            at_war = False
+            at_war = False  # the game at_war ends 
             
-        elif player_one_cards[-1].value < player_two_cards[-1].value:
+        elif player_one_cards[-1].value < player_two_cards[-1].value:   # the same logic as with the player 1 
             player2.add_cards(player_one_cards)
             player2.add_cards(player_two_cards)
             
@@ -122,18 +122,18 @@ while game_on:
         else:
             print('WAR')
             
-            if len(player1.all_cards) < 5:
+            if len(player1.all_cards) < 5:   # if the player 1 can not play a war game, he loses automaticaly 
                 print('Player 1 is unable to declare a war')
                 print('Player 2 wins!')
                 game_on = False 
                 break 
-            elif len (player2.all_cards) < 5:
+            elif len (player2.all_cards) < 5: # the same applies for the Player 2 
                 print('Player 2 is unable to declare a war')
                 print('Player 1 wins!')
                 game_on = False
                 break
             else:
                 for num in range(5):
-                    player_one_cards.append(player1.remove_one())
-                    player_two_cards.append(player2.remove_one())
+                    player_one_cards.append(player1.remove_one())   # add 5 cards to the table from player 1 hand
+                    player_two_cards.append(player2.remove_one())   # add 5 cards to the table from player 2 hand
 
